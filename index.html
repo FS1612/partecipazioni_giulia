@@ -29,7 +29,7 @@ input#flap{
     position: relative;
     width:320px;
     height: 200px;
-    background-color: #718355;
+    background-color: #E5E4E2;
 }
 
 .envelope-back:before{
@@ -99,7 +99,7 @@ input#flap{
     position:absolute;
     width: 0;
     height: 0;
-    border-bottom: 100px solid #87986a;
+    border-bottom: 100px solid white;
     border-left: 160px solid transparent;
     border-right:160px solid transparent;
     top: 100px;
@@ -120,14 +120,14 @@ input#flap{
 
 .card-front::before {
     border-left: 161px solid transparent;
-    border-right:161px solid #97a97c;
+    border-right:161px solid #E5E4E2;
     top:-100px;
     left:-162px;
 }
 
 .card-front::after {
     border-right: 161px solid transparent;
-    border-left:161px solid #97a97c;
+    border-left:161px solid #E5E4E2;
     top:-100px;
     left:-160px;
 }
@@ -137,7 +137,7 @@ input#flap{
     position:absolute;
     width: 0;
     height: 0;
-    border-top: 110px solid #b6c99a;
+    border-top: 110px solid white;
     border-left: 160px solid transparent;
     border-right: 160px solid transparent;
     top:0;
@@ -163,11 +163,34 @@ input#flap{
     font-size: 18px;
     font-style: italic;
     font-family: "Dancing Script";
-    color: #fff;
+    color: blue;
     pointer-events: none;
     z-index: 20;
     opacity: 1;
     transition: opacity .3s ease;
+}
+.flap::before {
+    content: "";
+    position: absolute;
+    top: -110px;
+    left: -160px;
+    width: 320px;
+    height: 110px;
+    background-image: url('mappa.png');
+
+    background-size: fill;
+    background-position: center;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    opacity: 0; 
+    pointer-events: none;
+    
+}
+#flap:checked + .flap::before {
+    opacity: 1;
+    transform: rotateX(180deg);
+  
+    background-color: white ; /* sfondo mappa */
+
 }
 #flap:checked ~ .flap-text {
     opacity: 0;
@@ -226,6 +249,65 @@ input#flap{
     opacity: 1 !important;
     transform: scale(1) rotate(0deg) !important;
 }
+/* ================= ROSA DEI VENTI ================ */
+
+.compass-rose-container {
+    position: absolute;
+    top: 120px;
+    left: 2%;
+    width: 80px;
+    height: 80px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.compass-rose {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition:
+        opacity .4s ease-out,
+        transform .4s cubic-bezier(.25,.46,.45,1.4);
+}
+/* ================= Timbro postale ================ */
+
+.postal-stamp-container {
+    position: absolute;
+    top: 40px;
+    left: 75%;
+    width: 80px;
+    height: 80px;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.postal-stamp {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition:
+        opacity .4s ease-out,
+        transform .4s cubic-bezier(.25,.46,.45,1.4);
+}
+/* ================= Aereo e tragitto ================ */
+.flight-path {
+    position: absolute;
+    top: 100px;       /* regola finché ti piace la posizione */
+    left: 60px;
+    width: 150px;
+    height: 150px;
+    z-index: 18;
+    pointer-events: none;
+}
+
+.plane-path-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.8;          /* leggero, elegante */
+}
+
+
 </style>
 </head>
 <body>
@@ -245,7 +327,17 @@ input#flap{
         <img src="sigillo.png" class="wax-seal">
         <img src="sigillo_rotto.png" class="wax-seal-broken">
     </div>
-    
+
+    <div class="compass-rose-container">
+        <img src="Rosa_Dei_Venti.png" class="compass-rose">     
+    </div>
+     <div class="postal-stamp-container">
+        <img src="timbro.png" class="postal-stamp">
+    </div>
+    <div class="flight-path">
+    <img src="plane-path.png" class="plane-path-img">
+    </div>
+
    <div class="card">Thanks!</div>
 
    <div class="card-front"></div>
