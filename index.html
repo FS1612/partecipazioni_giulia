@@ -164,6 +164,49 @@
 
     .dashed { fill:none; stroke:#4a4a4a; stroke-width:1; stroke-dasharray:4 3; }
     .divider { width:30px; height:1px; background:#d4a89a; margin:8px auto; }
+
+    /* ── GATEFOLD WRAPPER clip ── */
+    .gatefold-wrapper {
+      overflow: hidden; /* clippa le ali che escono ai lati quando aperte */
+    }
+
+    /* ── IBAN sotto (mobile) ── */
+    .iban-below {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 340px;
+      background: #fff;
+      border: 1px solid #e8e0d8;
+      border-radius: 12px;
+      padding: 20px 18px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+    }
+    .iban-below.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .iban-below .copy-btn-below {
+      margin-top: 12px;
+      display: inline-block;
+      background: transparent;
+      border: 0.5px solid #c9a99a;
+      color: #8a6a5a;
+      padding: 8px 22px;
+      border-radius: 20px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .iban-below .copy-btn-below:active { background: #f0e8e0; }
   </style>
 </head>
 <body>
@@ -292,6 +335,20 @@
   </div>
 
   <button class="open-btn" id="openBtn" onclick="toggleCard()">Apri l'invito ↓</button>
+
+  <!-- IBAN — visibile su mobile dopo apertura, su desktop è sull'ala destra -->
+  <div class="iban-below" id="ibanBelow">
+    <p class="serif" style="font-size:10px;color:#b89e8c;letter-spacing:2px;text-transform:uppercase;margin:0 0 6px;">Un pensiero per noi</p>
+    <div class="divider"></div>
+    <p class="serif" style="font-size:13px;color:#888;line-height:1.7;margin:10px 0 14px;font-style:italic;">Se desiderate farci un regalo, il vostro contributo al nostro futuro insieme sarà il dono più prezioso.</p>
+    <div style="background:#faf7f4;border:1px solid #e8e0d8;border-radius:8px;padding:14px 12px;">
+      <span class="serif" style="font-size:9px;color:#b89e8c;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:4px;">Intestato a</span>
+      <span class="serif" style="font-size:14px;color:#3a3a3a;display:block;margin-bottom:10px;line-height:1.5;">Giulia Conforti &amp; Giovanni Giuliani</span>
+      <span class="serif" style="font-size:9px;color:#b89e8c;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:4px;">IBAN</span>
+      <span class="serif" style="font-size:14px;color:#3a3a3a;display:block;margin-bottom:0;letter-spacing:0.04em;" id="ibanCodeBelow">IT00 A000 0000 0000 0000 0000 000</span>
+    </div>
+    <button class="copy-btn-below" onclick="copyIbanBelow()">Copia IBAN</button>
+  </div>
 </div>
 
 <script>
@@ -321,20 +378,35 @@
     document.getElementById('coverLeft').classList.toggle('open', isOpen);
     document.getElementById('coverRight').classList.toggle('open', isOpen);
     document.getElementById('openBtn').textContent = isOpen ? 'Chiudi ↑' : "Apri l'invito ↓";
+    /* mostra/nasconde IBAN sotto con piccolo ritardo per aspettare l'animazione */
+    var iban = document.getElementById('ibanBelow');
+    if (isOpen) {
+      setTimeout(function() { iban.classList.add('visible'); }, 900);
+    } else {
+      iban.classList.remove('visible');
+    }
   }
 
-  /* ── Copia IBAN ── */
+  /* ── Copia IBAN (ala destra desktop) ── */
   function copyIban() {
-    var iban = document.getElementById('ibanCode').textContent.replace(/\s/g, '');
-    var btn = document.querySelector('.copy-btn');
+    copyText(document.getElementById('ibanCode').textContent, document.querySelector('.copy-btn'));
+  }
+  /* ── Copia IBAN (sezione sotto mobile) ── */
+  function copyIbanBelow() {
+    copyText(document.getElementById('ibanCodeBelow').textContent, document.querySelector('.copy-btn-below'));
+  }
+
+  function copyText(raw, btn) {
+    var text = raw.replace(/\s/g, '');
+    var orig = btn.textContent;
     function flash() {
       btn.textContent = 'Copiato ✓';
-      setTimeout(function() { btn.textContent = 'Copia IBAN'; }, 2000);
+      setTimeout(function() { btn.textContent = orig; }, 2000);
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(iban).then(flash).catch(function() { fallbackCopy(iban, flash); });
+      navigator.clipboard.writeText(text).then(flash).catch(function() { fallbackCopy(text, flash); });
     } else {
-      fallbackCopy(iban, flash);
+      fallbackCopy(text, flash);
     }
   }
   function fallbackCopy(text, cb) {
